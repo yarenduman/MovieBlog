@@ -48,7 +48,7 @@ namespace MovieBlog.Controllers
         // GET: MyLists/Create
         public IActionResult Create()
         {
-            ViewData["GenreId"] = new SelectList(_context.Genre, "Id", "Id");
+            ViewData["GenreId"] = new SelectList(_context.Genre, "Id", "Name");
             return View();
         }
 
@@ -65,7 +65,7 @@ namespace MovieBlog.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["GenreId"] = new SelectList(_context.Genre, "Id", "Id", myList.GenreId);
+            ViewData["GenreId"] = new SelectList(_context.Genre, "Id", "Name", myList.GenreId);
             return View(myList);
         }
 
@@ -82,7 +82,7 @@ namespace MovieBlog.Controllers
             {
                 return NotFound();
             }
-            ViewData["GenreId"] = new SelectList(_context.Genre, "Id", "Id", myList.GenreId);
+            ViewData["GenreId"] = new SelectList(_context.Genre, "Id", "Name", myList.GenreId);
             return View(myList);
         }
 
@@ -118,7 +118,7 @@ namespace MovieBlog.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["GenreId"] = new SelectList(_context.Genre, "Id", "Id", myList.GenreId);
+            ViewData["GenreId"] = new SelectList(_context.Genre, "Id", "Name", myList.GenreId);
             return View(myList);
         }
 
@@ -152,7 +152,30 @@ namespace MovieBlog.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        private bool MyListExists(int id)
+        public async Task<IActionResult> Watched(int id)
+        {
+            return await ChangeStatus(id, false);
+        }
+
+        public async Task<IActionResult> Unwatched(int id)
+        {
+            return await ChangeStatus(id, true);
+        }
+        private async Task<IActionResult> ChangeStatus(int id, bool status)
+        {
+            var MyListItem = _context.MyList.FirstOrDefault(toWatch => toWatch.Id == id);
+            if (MyListItem == null)
+            {
+                return NotFound();
+            }
+            MyListItem.IsCompleted = status;
+            MyListItem.CompletedDate = DateTime.Now;
+
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
+        }
+
+    private bool MyListExists(int id)
         {
             return _context.MyList.Any(e => e.Id == id);
         }
