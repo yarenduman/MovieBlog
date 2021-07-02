@@ -15,5 +15,6 @@ namespace MovieBlog.Data
         }
         public DbSet<MyList> MyList { get; set; }
         public DbSet<Genre> Genre { get; set; }
+        public DbSet<MyBlog> MyBlog { get; set; }
     }
 }
