@@ -11,7 +11,15 @@
 </p>
 
 <p>
-    <a asp-action="Index" asp-route-showall="true">Show All</a>
+    @if (ViewBag.ShowAll)
+    {
+    <a asp-action="Index" asp-route-showall="false">Show only unwatched movies</a>
+    }
+    else
+    {
+        <a asp-action="Index" asp-route-showall="true">Show the all list</a>
+    }
+
 </p>
 <table class="table">
     <thead>
@@ -66,11 +74,11 @@
                 <td>
                     @if (item.IsCompleted)
                     {
-                        <a asp-action="Watched" asp-route-id="@item.Id">Unwatched</a>
+                        <a asp-action="Watched" asp-route-id="@item.Id" asp-route-showAll="@ViewBag.ShowAll">Unwatched</a>
                     }
                     else
                     {
-                        <a asp-action="Unwatched" asp-route-id="@item.Id">Watched</a>
+                        <a asp-action="Unwatched" asp-route-id="@item.Id" asp-route-showAll="@ViewBag.ShowAll">Watched</a>
 
                     }
 

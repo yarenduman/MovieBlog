@@ -22,6 +22,7 @@ namespace MovieBlog.Controllers
         // GET: MyLists
         public async Task<IActionResult> Index(bool showall=false)
         {
+            ViewBag.ShowAll = showall;
             var applicationDbContext = _context.MyList.Include(m => m.Genre).AsQueryable();
             if (!showall)
             {
@@ -156,16 +157,16 @@ namespace MovieBlog.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        public async Task<IActionResult> Watched(int id)
+        public async Task<IActionResult> Watched(int id, bool showAll)
         {
-            return await ChangeStatus(id, false);
+            return await ChangeStatus(id, false, showAll);
         }
 
-        public async Task<IActionResult> Unwatched(int id)
+        public async Task<IActionResult> Unwatched(int id, bool showAll)
         {
-            return await ChangeStatus(id, true);
+            return await ChangeStatus(id, true, showAll);
         }
-        private async Task<IActionResult> ChangeStatus(int id, bool status)
+        private async Task<IActionResult> ChangeStatus(int id, bool status, bool CurrentShowAllValue)
         {
             var MyListItem = _context.MyList.FirstOrDefault(toWatch => toWatch.Id == id);
             if (MyListItem == null)
@@ -176,7 +177,7 @@ namespace MovieBlog.Controllers
             MyListItem.CompletedDate = DateTime.Now;
 
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(Index), new { showall=CurrentShowAllValue});
         }
 
     private bool MyListExists(int id)
