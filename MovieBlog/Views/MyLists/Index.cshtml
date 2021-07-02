@@ -9,6 +9,10 @@
 <p>
     <a asp-action="Create">Add a new movie</a>
 </p>
+
+<p>
+    <a asp-action="Index" asp-route-showall="true">Show All</a>
+</p>
 <table class="table">
     <thead>
         <tr>
@@ -32,48 +36,49 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @if (item.IsCompleted)
-                {
-                    @Html.DisplayFor(modelItem => item.Movie)
-                }
-                else
-                {
-                <b> @Html.DisplayFor(modelItem => item.Movie)</b>
-                }
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @if (item.IsCompleted)
+                    {
+                        @Html.DisplayFor(modelItem => item.Movie)
+                    }
+                    else
+                    {
+                        <b> @Html.DisplayFor(modelItem => item.Movie)</b>
+                    }
 
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Genre.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Director)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Year)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.IsCompleted)
-            </td>
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Genre.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Director)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Year)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.IsCompleted)
+                </td>
 
-            <td>
-                @if (item.IsCompleted)
-                {
-                    <a asp-action="Watched" asp-route-id="@item.Id">Unwatched</a>
-                }
-                else
-                {
-                    <a asp-action="Unwatched" asp-route-id="@item.Id">Watched</a>
+                <td>
+                    @if (item.IsCompleted)
+                    {
+                        <a asp-action="Watched" asp-route-id="@item.Id">Unwatched</a>
+                    }
+                    else
+                    {
+                        <a asp-action="Unwatched" asp-route-id="@item.Id">Watched</a>
 
-                }
+                    }
 
-                | <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
+                    | <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>

@@ -20,12 +20,16 @@ namespace MovieBlog.Controllers
         }
 
         // GET: MyLists
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(bool showall=false)
         {
-            var applicationDbContext = _context.MyList.Include(m => m.Genre);
+            var applicationDbContext = _context.MyList.Include(m => m.Genre).AsQueryable();
+            if (!showall)
+            {
+                applicationDbContext = applicationDbContext.Where(m => !m.IsCompleted);
+            }
+            applicationDbContext = applicationDbContext.OrderBy(m => m.Movie);
             return View(await applicationDbContext.ToListAsync());
         }
-
         // GET: MyLists/Details/5
         public async Task<IActionResult> Details(int? id)
         {
@@ -48,7 +52,7 @@ namespace MovieBlog.Controllers
         // GET: MyLists/Create
         public IActionResult Create()
         {
-            ViewData["GenreId"] = new SelectList(_context.Genre, "Id", "Name");
+            ViewBag.GenreSelectList = new SelectList(_context.Genre, "Id", "Name");
             return View();
         }
 
