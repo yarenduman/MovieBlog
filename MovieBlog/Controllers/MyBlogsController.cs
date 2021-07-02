@@ -20,13 +20,20 @@ namespace MovieBlog.Controllers
         }
 
         // GET: MyBlogs
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(bool showall = false)
         {
-            return View(await _context.MyBlog.ToListAsync());
+            ViewBag.ShowAll = showall;
+            var applicationDbContext = _context.MyBlog.AsQueryable();
+            if (!showall)
+            {
+                applicationDbContext = applicationDbContext.Where(m => !m.IsPublished);
+            }
+            applicationDbContext = applicationDbContext.OrderBy(m => m.Heading);
+            return View(await applicationDbContext.ToListAsync());
         }
 
-        // GET: MyBlogs/Details/5
-        public async Task<IActionResult> Details(int? id)
+            // GET: MyBlogs/Details/5
+            public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
             {
@@ -144,7 +151,28 @@ namespace MovieBlog.Controllers
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
+        public async Task<IActionResult> Published(int id, bool showAll)
+        {
+            return await ChangeStatus(id, false, showAll);
+        }
 
+        public async Task<IActionResult> Unpublished(int id, bool showAll)
+        {
+            return await ChangeStatus(id, true, showAll);
+        }
+        private async Task<IActionResult> ChangeStatus(int id, bool status, bool CurrentShowAllValue)
+        {
+            var MyBlogItem = _context.MyBlog.FirstOrDefault(toPublish => toPublish.Id == id);
+            if (MyBlogItem == null)
+            {
+                return NotFound();
+            }
+            MyBlogItem.IsPublished = status;
+            MyBlogItem.CreatedDate = DateTime.Now;
+
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index), new { showall = CurrentShowAllValue});
+        }
         private bool MyBlogExists(int id)
         {
             return _context.MyBlog.Any(e => e.Id == id);

@@ -174,7 +174,7 @@ namespace MovieBlog.Controllers
                 return NotFound();
             }
             MyListItem.IsCompleted = status;
-            MyListItem.CompletedDate = DateTime.Now;
+            MyListItem.CreatedDate = DateTime.Now;
 
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index), new { showall=CurrentShowAllValue});

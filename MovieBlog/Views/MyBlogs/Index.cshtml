@@ -4,10 +4,21 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
+<h2>My Blog</h2>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="Create">Create new content</a>
+</p>
+<p>
+    @if (ViewBag.ShowAll)
+    {
+        <a asp-action="Index" asp-route-showall="false">Show only unpublished contents</a>
+    }
+    else
+    {
+        <a asp-action="Index" asp-route-showall="true">Show the all contents</a>
+    }
+
 </p>
 <table class="table">
     <thead>
@@ -43,7 +54,16 @@
                 @Html.DisplayFor(modelItem => item.CreatedDate)
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                @if (item.IsPublished)
+                {
+                    <a asp-action="Published" asp-route-id="@item.Id" asp-route-showAll="@ViewBag.ShowAll">Unpublished</a>
+                }
+                else
+                {
+                    <a asp-action="Unpublished" asp-route-id="@item.Id" asp-route-showAll="@ViewBag.ShowAll">Published</a>
+
+                }
+                |<a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
                 <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
                 <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
             </td>
