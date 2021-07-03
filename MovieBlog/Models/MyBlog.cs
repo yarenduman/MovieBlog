@@ -29,5 +29,8 @@ namespace MovieBlog.Models
 
         public DateTime CreatedDate { get; set; }
 
+        public string AuthorId { get; set; }
+        public virtual Author Author { get; set; }
+
     }
 }

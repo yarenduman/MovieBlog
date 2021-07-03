@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -10,20 +12,26 @@ using MovieBlog.Models;
 
 namespace MovieBlog.Controllers
 {
+    [Authorize]
     public class MyListsController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<Author> _userManager;
 
-        public MyListsController(ApplicationDbContext context)
+
+        public MyListsController(ApplicationDbContext context, UserManager<Author> userManager)
         {
             _context = context;
+            _userManager = userManager;
+
         }
 
         // GET: MyLists
         public async Task<IActionResult> Index(bool showall=false)
         {
+            var Author = await _userManager.GetUserAsync(HttpContext.User);
             ViewBag.ShowAll = showall;
-            var applicationDbContext = _context.MyList.Include(m => m.Genre).AsQueryable();
+            var applicationDbContext = _context.MyList.Include(m => m.Genre).AsQueryable().Where(m => m.AuthorId == Author.Id);
             if (!showall)
             {
                 applicationDbContext = applicationDbContext.Where(m => !m.IsCompleted);
@@ -63,7 +71,10 @@ namespace MovieBlog.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Movie,GenreId,Director,Year,IsCompleted")] MyList myList)
-        {
+        { 
+            var Author = await _userManager.GetUserAsync(HttpContext.User);
+            myList.AuthorId = Author.Id;
+
             if (ModelState.IsValid)
             {
                 _context.Add(myList);
@@ -81,8 +92,13 @@ namespace MovieBlog.Controllers
             {
                 return NotFound();
             }
-
             var myList = await _context.MyList.FindAsync(id);
+            var currentUser = await _userManager.GetUserAsync(HttpContext.User);
+            if(myList.AuthorId != currentUser.Id)
+            {
+                return Unauthorized();
+            }
+
             if (myList == null)
             {
                 return NotFound();
@@ -96,7 +112,7 @@ namespace MovieBlog.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Movie,GenreId,Director,Year,IsCompleted")] MyList myList)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Movie,GenreId,Director,Year,IsCompleted, CreatedDate, AuthorId")] MyList myList)
         {
             if (id != myList.Id)
             {
@@ -107,7 +123,19 @@ namespace MovieBlog.Controllers
             {
                 try
                 {
-                    _context.Update(myList);
+                    var oldMovie = await _context.MyList.FindAsync(id);
+                    var currentUser = await _userManager.GetUserAsync(HttpContext.User);
+                    if (oldMovie.AuthorId != currentUser.Id)
+                    {
+                        return Unauthorized();
+                    }
+                    oldMovie.Movie = oldMovie.Movie;
+                    oldMovie.GenreId = oldMovie.GenreId;
+                    oldMovie.Director = oldMovie.Director;
+                    oldMovie.Year = oldMovie.Year;
+                    oldMovie.IsCompleted = oldMovie.IsCompleted;
+
+                    _context.Update(oldMovie);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)

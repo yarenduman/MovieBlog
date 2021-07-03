@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -10,20 +12,25 @@ using MovieBlog.Models;
 
 namespace MovieBlog.Controllers
 {
+    [Authorize]
     public class MyBlogsController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<Author> _userManager;
 
-        public MyBlogsController(ApplicationDbContext context)
+        public MyBlogsController(ApplicationDbContext context, UserManager<Author> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         // GET: MyBlogs
         public async Task<IActionResult> Index(bool showall = false)
         {
+            var Author = await _userManager.GetUserAsync(HttpContext.User);
+
             ViewBag.ShowAll = showall;
-            var applicationDbContext = _context.MyBlog.AsQueryable();
+            var applicationDbContext = _context.MyBlog.AsQueryable().Where(m => m.AuthorId == Author.Id);
             if (!showall)
             {
                 applicationDbContext = applicationDbContext.Where(m => !m.IsPublished);
@@ -51,6 +58,7 @@ namespace MovieBlog.Controllers
         }
 
         // GET: MyBlogs/Create
+        
         public IActionResult Create()
         {
             return View();
@@ -61,8 +69,12 @@ namespace MovieBlog.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+ 
         public async Task<IActionResult> Create([Bind("Id,Heading,Content,IsPublished,CreatedDate")] MyBlog myBlog)
         {
+            var Author = await _userManager.GetUserAsync(HttpContext.User);
+            myBlog.AuthorId = Author.Id;
+
             if (ModelState.IsValid)
             {
                 _context.Add(myBlog);
@@ -93,7 +105,7 @@ namespace MovieBlog.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Heading,Content,IsPublished,CreatedDate")] MyBlog myBlog)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Heading,Content,IsPublished,CreatedDate, AuthorId")] MyBlog myBlog)
         {
             if (id != myBlog.Id)
             {

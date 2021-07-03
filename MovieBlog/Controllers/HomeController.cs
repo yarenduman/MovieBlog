@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using MovieBlog.Data;
@@ -15,20 +16,32 @@ namespace MovieBlog.Controllers
     {
         private readonly ILogger<HomeController> _logger;
         private readonly ApplicationDbContext dbContext;
+        private readonly UserManager<Author> userManager;
 
-        public HomeController(ILogger<HomeController> logger, ApplicationDbContext dbContext)
+        public HomeController(ILogger<HomeController> logger, ApplicationDbContext dbContext, UserManager<Author> userManager)
         {
             _logger = logger;
             this.dbContext = dbContext;
+            this.userManager = userManager;
+
         }
 
         public async Task<IActionResult> Index()
         {
-           var query = dbContext.MyBlog
-                .Where(b => b.IsPublished)
-                .OrderBy(b => b.CreatedDate)
-                .Take(3);
-            List<MyBlog> result = await query.ToListAsync();
+            List<MyBlog> result;
+
+            if (User.Identity.IsAuthenticated)
+            {
+                var Author = await userManager.GetUserAsync(HttpContext.User);
+                var query = dbContext.MyBlog
+                    .Where(b => b.AuthorId == Author.Id && !b.IsPublished)
+                    .OrderBy(b => b.CreatedDate);
+                result = await query.ToListAsync();
+            }
+            else
+            {
+                result = new List<MyBlog>();
+            }
             return View(result);
         }
 

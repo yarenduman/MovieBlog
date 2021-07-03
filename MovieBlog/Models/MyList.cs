@@ -44,8 +44,8 @@ namespace MovieBlog.Models
         [ScaffoldColumn(false)]
         public DateTime CompletedDate { get; set; }
 
-
-       
+        public string AuthorId { get; set; }
+        public virtual Author Author { get; set; }
     }
 }
 

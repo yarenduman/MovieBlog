@@ -6,42 +6,46 @@
 <div class="text-center">
     <h1 class="display-4">Welcome to the Movie Blog</h1>
 </div>
-@if (!Model.Any())
-{
-    <div class="text-center">
-        <h1 class="display-4">You don't have any content published yet!</h1>
 
-    </div>
-}
-else
+@if (User.Identity.IsAuthenticated)
 {
-    <table class="table">
-        <thead>
-            <tr>
-                <th>
-                    @Html.DisplayNameFor(model => model.Heading)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Content)
-                </th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model)
-            {
+    @if (!Model.Any())
+    {
+        <div class="text-center">
+            <h1 class="display-4">You don't have any content published yet!</h1>
+
+        </div>
+    }
+    else
+    {
+        <table class="table">
+            <thead>
                 <tr>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Heading)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Content)
-                    </td>
-
-
+                    <th>
+                        @Html.DisplayNameFor(model => model.Heading)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Content)
+                    </th>
                 </tr>
-            }
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Heading)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Content)
+                        </td>
 
+
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+    }
 }
 
