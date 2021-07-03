@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -12,6 +13,7 @@ using System.Threading.Tasks;
 
 namespace MovieBlog.Controllers
 {
+  
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
@@ -34,7 +36,7 @@ namespace MovieBlog.Controllers
             {
                 var Author = await userManager.GetUserAsync(HttpContext.User);
                 var query = dbContext.MyBlog
-                    .Where(b => b.AuthorId == Author.Id && !b.IsPublished)
+                    .Where(b => b.AuthorId == Author.Id && b.IsPublished)
                     .OrderBy(b => b.CreatedDate);
                 result = await query.ToListAsync();
             }
