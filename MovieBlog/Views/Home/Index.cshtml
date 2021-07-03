@@ -1,5 +1,7 @@
 ﻿@model IEnumerable<MovieBlog.Models.MyBlog>
-
+@using Microsoft.AspNetCore.Identity
+@inject UserManager<Author> UserManager
+@inject SignInManager<Author> SignInManager
 
 @{ ViewData["Title"] = "Home Page";
 }
@@ -8,8 +10,14 @@
     <h1 class="display-4">Welcome to the Movie Blog</h1>
 </div>
 
+
 @if (User.Identity.IsAuthenticated)
 {
+
+    var Author = await UserManager.GetUserAsync(User);
+
+
+
     @if (!Model.Any())
     {
         <div class="text-center">
@@ -23,6 +31,9 @@
             <thead>
                 <tr>
                     <th>
+                        @Html.DisplayNameFor(model => model.Author.Name)
+                    </th>
+                    <th>
                         @Html.DisplayNameFor(model => model.Heading)
                     </th>
                     <th>
@@ -34,6 +45,10 @@
                 @foreach (var item in Model)
                 {
                     <tr>
+                        <th>
+
+                            @Html.DisplayNameFor(modelItem => item.Author.Name)
+                        </th>
                         <td>
                             @Html.DisplayFor(modelItem => item.Heading)
                         </td>

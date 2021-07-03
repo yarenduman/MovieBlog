@@ -70,7 +70,7 @@ namespace MovieBlog.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
  
-        public async Task<IActionResult> Create([Bind("Id,Heading,Content,IsPublished,CreatedDate")] MyBlog myBlog)
+        public async Task<IActionResult> Create([Bind("Id,Heading,Content,IsPublished,CreatedDate,AuthorId")] MyBlog myBlog)
         {
             var Author = await _userManager.GetUserAsync(HttpContext.User);
             myBlog.AuthorId = Author.Id;
@@ -105,7 +105,7 @@ namespace MovieBlog.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Heading,Content,IsPublished,CreatedDate, AuthorId")] MyBlog myBlog)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Heading,Content,IsPublished,CreatedDate")] MyBlog myBlog)
         {
             if (id != myBlog.Id)
             {
