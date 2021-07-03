@@ -93,12 +93,6 @@ namespace MovieBlog.Controllers
                 return NotFound();
             }
             var myList = await _context.MyList.FindAsync(id);
-            var currentUser = await _userManager.GetUserAsync(HttpContext.User);
-            if(myList.AuthorId != currentUser.Id)
-            {
-                return Unauthorized();
-            }
-
             if (myList == null)
             {
                 return NotFound();
@@ -118,24 +112,11 @@ namespace MovieBlog.Controllers
             {
                 return NotFound();
             }
-
             if (ModelState.IsValid)
             {
                 try
                 {
-                    var oldMovie = await _context.MyList.FindAsync(id);
-                    var currentUser = await _userManager.GetUserAsync(HttpContext.User);
-                    if (oldMovie.AuthorId != currentUser.Id)
-                    {
-                        return Unauthorized();
-                    }
-                    oldMovie.Movie = oldMovie.Movie;
-                    oldMovie.GenreId = oldMovie.GenreId;
-                    oldMovie.Director = oldMovie.Director;
-                    oldMovie.Year = oldMovie.Year;
-                    oldMovie.IsCompleted = oldMovie.IsCompleted;
-
-                    _context.Update(oldMovie);
+                    _context.Update(myList);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)

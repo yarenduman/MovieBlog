@@ -34,9 +34,8 @@ namespace MovieBlog.Controllers
 
             if (User.Identity.IsAuthenticated)
             {
-                var Author = await userManager.GetUserAsync(HttpContext.User);
                 var query = dbContext.MyBlog
-                    .Where(b => b.AuthorId == Author.Id && b.IsPublished)
+                    .Where(b => b.IsPublished)
                     .OrderBy(b => b.CreatedDate);
                 result = await query.ToListAsync();
             }

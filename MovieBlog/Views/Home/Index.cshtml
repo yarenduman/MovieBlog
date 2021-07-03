@@ -1,5 +1,6 @@
 ﻿@model IEnumerable<MovieBlog.Models.MyBlog>
 
+
 @{ ViewData["Title"] = "Home Page";
 }
 
@@ -32,16 +33,16 @@
             <tbody>
                 @foreach (var item in Model)
                 {
-                <tr>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Heading)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Content)
-                    </td>
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Heading)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Content)
+                        </td>
 
 
-                </tr>
+                    </tr>
                 }
             </tbody>
         </table>
