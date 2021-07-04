@@ -8,7 +8,7 @@ If there is content that you have not completed, you can save it in My Blog  sec
 This section is private to you, other users cannot see your drafts!
 
 Movie Time also helps you to make your own movie list!
-In the my list section, you can create a list of movies you have watched or want to watch.
+In the My List section, you can create a list of movies you have watched or want to watch.
 This is a dynamic section, you can filter the list by watched and unwatched.
 Do not worry! Other users will not be able to see your list.
 
