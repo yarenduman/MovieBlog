@@ -1,4 +1,4 @@
-# MovieBlog
+# Movie Time
 Movie Time helps you create content about movies and read other people's content! 
 To access all sections, you must be registered on the site.
 
