@@ -15,4 +15,4 @@ Do not worry! Other users will not be able to see your list.
 The genres section is a section where all registered users can edit. 
 If you think a movie genre is missing from the list, you can add it.
 
-Enjoy with movie time!
+Enjoy with Movie Time!
