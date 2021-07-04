@@ -4,6 +4,8 @@ To access all sections, you must be registered on the site.
 
 By clicking on My Blog section, you can write your opinions about the movies and publish them to share with other people. 
 You can read the content published by you and other users on the home page.
+If there is content that you have not completed, you can save it in My Blog  section without publishing it and edit it later. 
+This section is private to you, other users cannot see your drafts!
 
 Movie Time also helps you to make your own movie list!
 In the my list section, you can create a list of movies you have watched or want to watch.
