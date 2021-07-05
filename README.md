@@ -16,3 +16,6 @@ The genres section is a section where all registered users can edit.
 If you think a movie genre is missing from the list, you can add it.
 
 Enjoy with Movie Time!
+
+![ss](https://user-images.githubusercontent.com/75947247/124426118-3f1ff000-dd72-11eb-9509-b3689f9697ae.png)
+
